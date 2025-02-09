@@ -1,0 +1,8 @@
+---
+- name: Configure Windows IIS Servers
+  hosts: windows_servers
+  gather_facts: true
+
+  roles:
+    - role: iis
+      tags: ['iis'] 

@@ -1,0 +1,50 @@
+---
+- name: Ensure IIS features are installed
+  win_feature:
+    name: "{{ item }}"
+    state: present
+    include_management_tools: true
+  loop: "{{ iis_features }}"
+  notify: restart iis service
+
+- name: Configure IIS Application Pools
+  win_iis_webapppool:
+    name: "{{ item.name }}"
+    state: "{{ item.state }}"
+    attributes:
+      managedRuntimeVersion: "{{ item.runtime_version }}"
+      managedPipelineMode: "{{ item.pipeline_mode }}"
+  loop: "{{ iis_app_pools }}"
+
+- name: Configure IIS Websites
+  win_iis_website:
+    name: "{{ item.name }}"
+    state: "{{ item.state }}"
+    physical_path: "{{ item.physical_path }}"
+    application_pool: "DefaultAppPool"
+    port: "{{ item.port }}"
+    ip: "{{ item.ip }}"
+    hostname: "{{ item.hostname }}"
+  loop: "{{ iis_websites }}"
+
+- name: Configure IIS Logging
+  win_iis_webserverlogging:
+    directory: "{{ iis_logging.directory }}"
+    period: "{{ iis_logging.period }}"
+    maximum_file_size: "{{ iis_logging.max_size }}"
+    enabled: "{{ iis_logging.enabled }}"
+  when: iis_logging.enabled | bool
+
+- name: Configure IIS Request Filtering
+  win_iis_requestfiltering:
+    name: "Default Web Site"
+    max_url_length: "{{ iis_security.max_url_length }}"
+    max_query_string: "{{ iis_security.max_query_string }}"
+    state: present
+  when: iis_security.request_filtering_enabled | bool
+
+- name: Ensure IIS service is running
+  win_service:
+    name: W3SVC
+    state: started
+    start_mode: auto 

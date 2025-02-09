@@ -1,0 +1,50 @@
+---
+# IIS Features to be installed
+iis_features:
+  - Web-Server
+  - Web-Common-Http
+  - Web-Default-Doc
+  - Web-Dir-Browsing
+  - Web-Http-Errors
+  - Web-Static-Content
+  - Web-Health
+  - Web-Http-Logging
+  - Web-Performance
+  - Web-Security
+  - Web-Filtering
+  - Web-App-Dev
+  - Web-Net-Ext45
+  - Web-Asp-Net45
+  - Web-ISAPI-Ext
+  - Web-ISAPI-Filter
+  - Web-Mgmt-Tools
+
+# Default website configuration
+iis_websites:
+  - name: "Default Web Site"
+    state: started
+    port: 80
+    ip: "*"
+    hostname: ""
+    physical_path: "C:\\inetpub\\wwwroot"
+
+# Application pools configuration
+iis_app_pools:
+  - name: "DefaultAppPool"
+    state: started
+    runtime_version: "v4.0"
+    pipeline_mode: "Integrated"
+
+# IIS logging configuration
+iis_logging:
+  directory: "C:\\inetpub\\logs"
+  period: "Daily"
+  max_size: 1048576  # 1GB in bytes
+  enabled: true
+
+# Security settings
+iis_security:
+  dynamic_ip_restrictions: false
+  request_filtering_enabled: true
+  max_url_length: 4096
+  max_query_string: 2048 

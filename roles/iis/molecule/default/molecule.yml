@@ -1,0 +1,40 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+platforms:
+  - name: windows-iis
+    image: mcr.microsoft.com/windows/servercore:ltsc2019
+    pre_build_image: true
+    command: powershell.exe -NoLogo -NoProfile
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+provisioner:
+  name: ansible
+  config_options:
+    defaults:
+      interpreter_python: auto_silent
+  inventory:
+    host_vars:
+      windows-iis:
+        ansible_connection: winrm
+        ansible_winrm_server_cert_validation: ignore
+verifier:
+  name: testinfra
+  options:
+    verbose: true
+scenario:
+  test_sequence:
+    - dependency
+    - lint
+    - cleanup
+    - destroy
+    - syntax
+    - create
+    - prepare
+    - converge
+    - idempotence
+    - verify
+    - cleanup
+    - destroy 

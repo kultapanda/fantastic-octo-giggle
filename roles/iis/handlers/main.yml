@@ -1,0 +1,5 @@
+---
+- name: restart iis service
+  win_service:
+    name: W3SVC
+    state: restarted 

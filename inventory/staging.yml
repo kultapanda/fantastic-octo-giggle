@@ -1,0 +1,14 @@
+---
+all:
+  children:
+    windows_servers:
+      hosts:
+        win-iis-01:
+          ansible_host: your-server.example.com
+          ansible_user: your-admin-user
+          ansible_password: "{{ vault_ansible_password }}"
+      vars:
+        ansible_connection: winrm
+        ansible_winrm_server_cert_validation: ignore
+        ansible_winrm_transport: basic
+        ansible_port: 5985 
